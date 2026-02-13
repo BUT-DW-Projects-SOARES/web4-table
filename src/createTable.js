@@ -8,6 +8,7 @@ function createTableHeader() {
   return `
     <thead>
       <tr>
+        <th>Action</th>
         <th>ID</th>
         <th>Name</th>
         <th>Email</th>
@@ -30,6 +31,7 @@ function createTableHeader() {
 function createTableRow(member) {
   return `
     <tr>
+      <td><button onclick="deleteMember(${member.id})">X</button></td>
       <td>${member.id}</td>
       <td>${member.name}</td>
       <td>${member.email}</td>
@@ -78,7 +80,8 @@ async function displayTable() {
     const tableHTML = createTable(json);
 
     // Insère la table dans le DOM
-    document.body.insertAdjacentHTML('beforeend', tableHTML);
+    const container = document.getElementById('container');
+    container.insertAdjacentHTML('beforeend', tableHTML);
   } catch (error) {
     console.error(error.message);
   }

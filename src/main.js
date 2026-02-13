@@ -22,7 +22,8 @@ async function getData() {
     // Affiche le nombre de membres sur la page
     const h2 = document.createElement('h2');
     h2.textContent = `Nombre de membres : ${json.length}`;
-    document.body.appendChild(h2);
+    const container = document.getElementById('container');
+    container.appendChild(h2);
   } catch (error) {
     // Erreur : Affiche le message d'erreur
     console.error(error.message);
