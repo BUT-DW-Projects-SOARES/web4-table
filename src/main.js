@@ -1,4 +1,5 @@
 import './style.css';
+import { displayTable } from './createTable.js';
 
 async function getData() {
   // URL du point de terminaison de l'API REST
@@ -29,3 +30,4 @@ async function getData() {
 }
 
 await getData();
+await displayTable();
