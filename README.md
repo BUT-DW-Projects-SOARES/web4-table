@@ -29,11 +29,13 @@ L'objectif de ce TP est de réviser :
 
 ### 3. Récupération des données
 
-Utilisation de l'API Fetch pour récupérer les utilisateurs via :
+Utilisation de l'API Fetch pour récupérer les utilisateurs via l'API REST locale :
 
 ```
-https://jsonplaceholder.typicode.com/users
+http://localhost/S4/Web4/TP4/web4-api_users/users.php?function=readall
 ```
+
+> **Note CORS** : L'API étant servie par Apache (port 80) et le front par Vite (port 5173), les en-têtes CORS doivent être configurés dans Apache (`httpd.conf`) pour autoriser les requêtes cross-origin.
 
 ### 4. Affichage des données
 
