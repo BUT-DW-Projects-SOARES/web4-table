@@ -36,10 +36,10 @@ function createTableRow(member) {
   return `
     <tr>
       <td><button onclick="deleteMember(${member.id})">X</button></td>
-      <td>${member.id}</td>
-      <td>${member.name}</td>
-      <td>${member.email}</td>
-      <td>${member.company.name}</td>
+      <td class="editable" onclick="editForm(${member.id})">${member.id}</td>
+      <td class="editable" onclick="editForm(${member.id})">${member.name}</td>
+      <td class="editable" onclick="editForm(${member.id})">${member.email}</td>
+      <td class="editable" onclick="editForm(${member.id})">${member.company.name}</td>
     </tr>
   `;
 }
@@ -228,8 +228,84 @@ async function handleFormSubmit(event) {
   }
 }
 
+async function editForm(id) {
+  // Vérifie si un formulaire d'édition est déjà ouvert
+  const existingForm = document.getElementById('editMemberForm');
+  if (existingForm) {
+    existingForm.remove();
+  }
+  
+  // Récupère les données du membre à éditer
+  const url = `http://localhost/S4/Web4/TP4/web4-api_users/users.php?function=read&user=${id}`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    const member = await response.json();
+    // Crée le formulaire d'édition avec les données du membre
+    const formHTML = `
+      <form id="editMemberForm">
+        <h3>Éditer le membre</h3>
+        <label for="editName">Name :</label>
+        <input type="text" id="editName" name="editName" value="${member.name}" required>
+        <label for="editEmail">Email :</label>
+        <input type="email" id="editEmail" name="editEmail" value="${member.email}" required>
+        <label for="editCompanyName">Company :</label>
+        <input type="text" id="editCompanyName" name="editCompanyName" value="${member.company.name}" required>
+        <button type="submit">Enregistrer</button>
+        <button type="button" id="cancelEditBtn">Annuler</button>
+      </form>
+    `;
+    const container = document.getElementById('container');
+    container.insertAdjacentHTML('beforeend', formHTML);
+
+    // Ajoute les événements
+    document
+      .getElementById('editMemberForm')
+      .addEventListener('submit', async (event) => {
+        event.preventDefault();
+        try {
+          const updatedData = {
+            id: member.id,
+            name: document.getElementById('editName').value,
+            email: document.getElementById('editEmail').value,
+            company: {
+              name: document.getElementById('editCompanyName').value,
+            },
+          };
+          const updateUrl = `http://localhost/S4/Web4/TP4/web4-api_users/users.php?function=update&user=${id}`;
+          const updateResponse = await fetch(updateUrl, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedData),
+          });
+          if (!updateResponse.ok) {
+            throw new Error(`Response status: ${updateResponse.status}`);
+          }
+          const json = await updateResponse.json();
+          console.log('Membre mis à jour:', json);
+          window.alert('Membre mis à jour avec succès !');
+          window.location.reload();
+        } catch (error) {
+          console.error(error.message);
+          window.alert(`Erreur lors de la mise à jour: ${error.message}`);
+        }
+      });
+    document.getElementById('cancelEditBtn').addEventListener('click', () => {
+      document.getElementById('editMemberForm').remove();
+    });
+  } catch (error) {
+    console.error(error.message);
+    window.alert(`Erreur lors de la récupération du membre: ${error.message}`);
+  }
+}
+
 // Expose la fonction globalement pour qu'elle soit accessible depuis onclick
 window.deleteMember = deleteMember;
 window.createForm = createForm;
+window.editForm = editForm;
 
-export { createTable, displayTable, deleteMember, createForm };
+export { createTable, displayTable, deleteMember, createForm, editForm };
