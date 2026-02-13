@@ -1,5 +1,5 @@
 import './style.css';
-import { displayTable } from './createTable.js';
+import { displayTable } from './modules/createTable.js';
 
 async function getData() {
   // URL du point de terminaison de l'API REST

@@ -1,4 +1,8 @@
-import './style.css';
+import '../style.css';
+
+/**
+ * @module createTable
+ */
 
 /**
  * Crée l'en-tête HTML d'une table
@@ -82,6 +86,11 @@ async function displayTable() {
     // Insère la table dans le DOM
     const container = document.getElementById('container');
     container.insertAdjacentHTML('beforeend', tableHTML);
+
+    // Ajoute le bouton "Ajouter un membre" en bas du tableau
+    const addButton =
+      '<button onclick="createForm()" class="add-member-btn">Ajouter un membre</button>';
+    container.insertAdjacentHTML('beforeend', addButton);
   } catch (error) {
     window.alert(error.message);
   }
@@ -110,6 +119,7 @@ async function deleteMember(id) {
     const json = await response.json();
     // Affiche les données dans la console
     window.alert(`Membre avec ID ${id} supprimé`);
+    window.location.reload();
     console.log(json);
   } catch (error) {
     // Erreur : Affiche le message d'erreur
@@ -117,7 +127,109 @@ async function deleteMember(id) {
   }
 }
 
+/**
+ * Crée et affiche un formulaire pour ajouter un nouveau membre
+ */
+function createForm() {
+  const formHTML = `
+    <form id="memberForm">
+      <h3>Ajouter un nouveau membre</h3>
+      
+      <label for="name">Name :</label>
+      <input type="text" id="name" name="name" required>
+      
+      <label for="email">Email :</label>
+      <input type="email" id="email" name="email" required>
+      
+      <label for="companyName">Company :</label>
+      <input type="text" id="companyName" name="companyName" required>
+      
+      <button type="submit">Ajouter</button>
+      <button type="button" id="cancelBtn">Annuler</button>
+    </form>
+  `;
+
+  const container = document.getElementById('container');
+  container.insertAdjacentHTML('beforeend', formHTML);
+
+  // Ajoute les événements
+  document
+    .getElementById('memberForm')
+    .addEventListener('submit', handleFormSubmit);
+  document.getElementById('cancelBtn').addEventListener('click', () => {
+    document.getElementById('memberForm').remove();
+  });
+}
+
+/**
+ * Gère la soumission du formulaire
+ * @param {Event} event - L'événement de soumission
+ * @async
+ */
+async function handleFormSubmit(event) {
+  event.preventDefault();
+
+  try {
+    // Récupère tous les utilisateurs pour trouver le plus grand ID
+    const readAllUrl =
+      'http://localhost/S4/Web4/TP4/web4-api_users/users.php?function=readall';
+    const usersResponse = await fetch(readAllUrl);
+    const users = await usersResponse.json();
+
+    // Trouve le plus grand ID
+    let maxId = 0;
+    users.forEach((user) => {
+      if (user.id && user.id > maxId) {
+        maxId = user.id;
+      }
+    });
+
+    // Récupère les données du formulaire avec le nouvel ID
+    const formData = {
+      id: maxId + 1,
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      company: {
+        name: document.getElementById('companyName').value,
+      },
+    };
+
+    // URL du point de terminaison de l'API REST
+    const url =
+      'http://localhost/S4/Web4/TP4/web4-api_users/users.php?function=create';
+
+    // Appelle fetch
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    // Vérifie le code de statut HTTP de la réponse
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    // Convertit les données reçues en format JSON
+    const json = await response.json();
+    console.log('Membre créé:', json);
+
+    // Affiche un message de succès
+    window.alert('Membre ajouté avec succès !');
+
+    // Recharge la page pour afficher les données mises à jour
+    window.location.reload();
+  } catch (error) {
+    // Erreur : Affiche le message d'erreur
+    console.error(error.message);
+    window.alert(`Erreur lors de l'ajout: ${error.message}`);
+  }
+}
+
 // Expose la fonction globalement pour qu'elle soit accessible depuis onclick
 window.deleteMember = deleteMember;
+window.createForm = createForm;
 
-export { createTable, displayTable, deleteMember };
+export { createTable, displayTable, deleteMember, createForm };

@@ -59,3 +59,94 @@ h2 {
   font-size: 1.5em;
   color: var(--text-secondary);
 }
+
+button {
+  padding: 10px 20px;
+  margin: 10px 5px;
+  background-color: var(--primary-color);
+  color: var(--primary-text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: var(--text-secondary);
+}
+
+td button {
+  background-color: #dc3545;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+td button:hover {
+  background-color: #c82333;
+}
+
+.add-member-btn {
+  display: block;
+  margin: 30px auto 20px;
+}
+
+#memberForm {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 15px var(--shadow-color);
+  text-align: left;
+}
+
+#memberForm h3 {
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#memberForm h4 {
+  color: var(--text-secondary);
+  margin-top: 20px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 5px;
+}
+
+#memberForm label {
+  display: block;
+  margin-top: 10px;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+#memberForm input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-family: 'Google Sans', sans-serif;
+}
+
+#memberForm input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+#memberForm button[type='submit'] {
+  background-color: var(--primary-color);
+  margin-top: 20px;
+}
+
+#memberForm button[type='button'] {
+  background-color: #6c757d;
+}
+
+#memberForm button[type='button']:hover {
+  background-color: #5a6268;
+}
