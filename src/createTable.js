@@ -83,8 +83,41 @@ async function displayTable() {
     const container = document.getElementById('container');
     container.insertAdjacentHTML('beforeend', tableHTML);
   } catch (error) {
-    console.error(error.message);
+    window.alert(error.message);
   }
 }
 
-export { createTable, displayTable };
+/**
+ * Supprime un membre via l'API
+ * @param {number} id - L'identifiant du membre à supprimer
+ * @async
+ * @returns {Promise<void>}
+ */
+
+async function deleteMember(id) {
+  // URL du point de terminaison de l'API REST
+  const url = `http://localhost/S4/Web4/TP4/web4-api_users/users.php?function=delete&user=${id}`;
+  try {
+    // Appelle fetch
+    const response = await fetch(url, { method: 'DELETE' });
+    // Vérifie le code de statut HTTP de la réponse
+    if (!response.ok) {
+      // Lève une erreur si response.ok vaut false
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    // Convertit les données reçues en format JSON
+    const json = await response.json();
+    // Affiche les données dans la console
+    window.alert(`Membre avec ID ${id} supprimé`);
+    console.log(json);
+  } catch (error) {
+    // Erreur : Affiche le message d'erreur
+    window.alert(error.message);
+  }
+}
+
+// Expose la fonction globalement pour qu'elle soit accessible depuis onclick
+window.deleteMember = deleteMember;
+
+export { createTable, displayTable, deleteMember };
